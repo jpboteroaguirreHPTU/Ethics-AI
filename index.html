@@ -113,27 +113,39 @@
 </div>
 
 <script>
-// Audio SFX
+// --- Mostrar cualquier error directamente en pantalla ---
+window.onerror = (msg, src, line, col, err) => {
+  const p = document.getElementById('panel');
+  if (p) {
+    p.innerHTML = `<div class="box"><strong>Error:</strong> ${String(msg)}<br>
+      <small>${src || ''}:${line || 0}:${col || 0}</small>
+      <pre style="white-space:pre-wrap">${err && err.stack ? err.stack : ''}</pre></div>`;
+  }
+  return false;
+};
+
+// --- Sonidos opcionales ---
 const sfx = { enabled:false, ctx:null,
   beep(freq=600, dur=.08, type="sine"){
-    if(!sfx.enabled) return;
-    if(!sfx.ctx) sfx.ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const now = sfx.ctx.currentTime, o = sfx.ctx.createOscillator(), g = sfx.ctx.createGain();
-    o.type=type; o.frequency.value=freq; o.connect(g); g.connect(sfx.ctx.destination);
-    g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(0.2, now+.01);
-    g.gain.exponentialRampToValueAtTime(0.0001, now+dur); o.start(now); o.stop(now+dur);
+    try{
+      if(!sfx.enabled) return;
+      sfx.ctx = sfx.ctx || new (window.AudioContext||window.webkitAudioContext)();
+      const now = sfx.ctx.currentTime, o = sfx.ctx.createOscillator(), g = sfx.ctx.createGain();
+      o.type=type; o.frequency.value=freq; o.connect(g); g.connect(sfx.ctx.destination);
+      g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(0.2, now+.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, now+dur); o.start(now); o.stop(now+dur);
+    }catch(e){/* ignorar bloqueo de audio por navegador */}
   }
 };
 
-// Estado
-const state={step:0, score:50, trust:50, fair:50, seconds:60, selected:0};
+// --- Estado / escenas ---
+const state={step:0, score:50, trust:50, fair:50, selected:0};
 const scenes=[
   { title:"Briefing",
     html:`<h2 class="pulse">🧠 Hospital Aurora — IA en la Caja Negra</h2>
-      <p>Eres parte del comité de implementación de IA. Decide en <strong>4 escenarios</strong> con límite de tiempo. 
+      <p>Eres parte del comité de implementación de IA. Decide en <strong>4 escenarios</strong> con límite de tiempo.
       Objetivo: <strong>maximizar puntaje ético, confianza y equidad</strong>.</p>
-      <div class="choices"><button class="choice" data-next>Comenzar la simulación</button></div>`,
-    time:0 },
+      <div class="choices"><button class="choice" data-next>Comenzar la simulación</button></div>`},
   { title:"Ronda 1 — Optum (opacidad técnica)",
     html:`<h2>Ronda 1 — Optum (opacidad técnica)</h2>
       <p>Algoritmo asigna pacientes usando <em>gasto histórico</em> como proxy. Zonas vulnerables rara vez son priorizadas.</p>`,
@@ -141,7 +153,7 @@ const scenes=[
       {text:"A) Mantener el modelo: su AUC es alta", delta:{score:-12,trust:-8,fair:-15}, fb:"La AUC no refleja sesgo poblacional; sin auditoría baja equidad."},
       {text:"B) Exigir variables clínicas directas", delta:{score:+10,trust:+6,fair:+8}, fb:"Mejora causalidad y reduce sesgo estructural."},
       {text:"C) Auditoría externa y reentrenamiento", delta:{score:+15,trust:+10,fair:+12}, fb:"Evidencia y trazabilidad independiente."}
-    ], time:55 },
+    ]},
   { title:"Ronda 2 — DeepMind–NHS (opacidad institucional)",
     html:`<h2>Ronda 2 — DeepMind–NHS (opacidad institucional)</h2>
       <p>Contrato confidencial; no permite auditorías externas.</p>`,
@@ -149,7 +161,7 @@ const scenes=[
       {text:"A) Publicar resumen técnico y manual", delta:{score:+5,trust:+5,fair:+2}, fb:"Transparencia superficial sin verificación."},
       {text:"B) Cláusula de auditoría y trazas de decisión", delta:{score:+15,trust:+12,fair:+8}, fb:"Transparencia institucional efectiva."},
       {text:"C) Proceder por ser líder del mercado", delta:{score:-10,trust:-12,fair:-10}, fb:"Marca no reemplaza rendición de cuentas."}
-    ], time:50 },
+    ]},
   { title:"Ronda 3 — ChatGPT clínico (opacidad cognitiva)",
     html:`<h2>Ronda 3 — ChatGPT clínico (opacidad cognitiva)</h2>
       <p>Residente usa LLM para diagnóstico con explicación convincente.</p>`,
@@ -157,105 +169,99 @@ const scenes=[
       {text:"A) Confiar si suena razonable", delta:{score:-12,trust:-15,fair:-5}, fb:"Narrativa ≠ causa. Riesgo de alucinaciones."},
       {text:"B) Verificar con datos y fuentes trazables", delta:{score:+10,trust:+10,fair:+5}, fb:"Buenas prácticas de verificación."},
       {text:"C) Usar para borradores con revisión formal", delta:{score:+10,trust:+8,fair:+4}, fb:"Supervisión humana explícita."}
-    ], time:45 },
+    ]},
   { title:"Ronda 4 — Escribas IA (técnica + institucional)",
     html:`<h2>Ronda 4 — Escribas IA (técnica + institucional)</h2>
       <p>IA redacta notas desde audio. No hay métricas públicas de fidelidad por especialidad.</p>`,
     choices:[
       {text:"A) Adoptar por ahorro de tiempo; editar si hay quejas", delta:{score:-15,trust:-10,fair:-8}, fb:"Omisiones/fabricaciones no detectadas."},
-      {text:"B) Piloto: medir error por palabra, omisiones, fabricaciones", delta:{score:+15,trust:+10,fair:+10}, fb:"Métricas explícitas de fidelidad narrativa."},
+      {text:"B) Piloto: medir error por palabra, omisiones y fabricaciones", delta:{score:+15,trust:+10,fair:+10}, fb:"Métricas explícitas de fidelidad narrativa."},
       {text:"C) Consentimiento informado y opt-out", delta:{score:+10,trust:+12,fair:+8}, fb:"Respeta autonomía y alinea expectativas."}
-    ], time:40 },
-  { title:"Debrief", html:`<h2>Informe de misión</h2><div id="summary"></div>
-    <div class="choices"><button class="choice" data-restart>Jugar de nuevo</button></div>`, time:0 }
+    ]},
+  { title:"Debrief",
+    html:`<h2>Informe de misión</h2>
+      <p id="summary"></p>
+      <div class="choices"><button class="choice" data-restart>Jugar de nuevo</button></div>`}
 ];
 
+// --- DOM refs ---
 const el={
-  panel:document.getElementById('panel'), log:document.getElementById('log'),
-  progBar:document.getElementById('progBar'), timer:document.getElementById('timeLeft'),
-  scoreLabel:document.getElementById('scoreLabel'), trustLabel:document.getElementById('trustLabel'), fairLabel:document.getElementById('fairLabel'),
-  scoreBar:document.getElementById('scoreBar'), trustBar:document.getElementById('trustBar'), fairBar:document.getElementById('fairBar'),
-  helpBtn:document.getElementById('helpBtn'), toggleAudio:document.getElementById('toggleAudio'), bestScore:document.getElementById('bestScore')
+  panel:document.getElementById('panel'),
+  log:document.getElementById('log'),
+  progBar:document.getElementById('progBar'),
+  scoreLabel:document.getElementById('scoreLabel'),
+  trustLabel:document.getElementById('trustLabel'),
+  fairLabel:document.getElementById('fairLabel'),
+  scoreBar:document.getElementById('scoreBar'),
+  trustBar:document.getElementById('trustBar'),
+  fairBar:document.getElementById('fairBar'),
+  helpBtn:document.getElementById('helpBtn'),
+  toggleAudio:document.getElementById('toggleAudio'),
+  bestScore:document.getElementById('bestScore')
 };
 
+// --- utilidades ---
 function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 function pct(n){return clamp(n,0,100)+"%";}
 function updateHUD(){
   el.scoreLabel.textContent=state.score; el.trustLabel.textContent=state.trust; el.fairLabel.textContent=state.fair;
   el.scoreBar.style.width=pct(state.score); el.trustBar.style.width=pct(state.trust); el.fairBar.style.width=pct(state.fair);
-  el.progBar.style.width=(state.step/(scenes.length-1))*100+"%";
+  if (el.progBar) el.progBar.style.width=(state.step/(scenes.length-1))*100+"%";
   const best=+localStorage.getItem("aurora_best")||0; el.bestScore.textContent=best?best:"—";
 }
 function addLog(text){ const d=document.createElement('div'); d.className="entry"; d.textContent=text; el.log.prepend(d); }
 
-let interval=null;
-function startTimer(seconds){
-  clearInterval(interval);
-  if(!seconds){el.timer.textContent="—";return;}
-  let t=seconds; el.timer.textContent=t+" s";
-  interval=setInterval(()=>{ t--; el.timer.textContent=t+" s"; if(t===10) sfx.beep(900,.06,"square");
-    if(t<=0){ clearInterval(interval); choose(0,true); } },1000);
-}
-
+// --- renderizado ---
 function renderScene(){
   const sc=scenes[state.step];
   el.panel.innerHTML=sc.html+(sc.choices?renderChoices(sc.choices):"");
-  updateHUD(); startTimer(sc.time); wire(sc.choices);
-  state.selected=0; highlightChoice(state.selected);
+  updateHUD(); bindHandlers(sc.choices);
 }
-function renderChoices(choices){ return `<div class="choices" role="listbox">${choices.map((c,i)=>`<button class="choice" data-index="${i}">${c.text}</button>`).join("")}</div>`; }
-function wire(choices){
+function renderChoices(choices){
+  return `<div class="choices" role="listbox">
+    ${choices.map((c,i)=>`<button class="choice" data-index="${i}">${c.text}</button>`).join("")}
+  </div>`;
+}
+function bindHandlers(choices){
   el.panel.querySelectorAll("[data-next]").forEach(b=>b.addEventListener("click",()=>{state.step++; renderScene(); sfx.beep(700,.06,"sine");}));
   el.panel.querySelectorAll("[data-restart]").forEach(b=>b.addEventListener("click",()=>{reset(); sfx.beep(700,.06,"sine");}));
-  el.panel.querySelectorAll(".choice[data-index]").forEach(b=>b.addEventListener("click",()=>{choose(+b.getAttribute("data-index"),false);}));
+  el.panel.querySelectorAll(".choice[data-index]").forEach(b=>b.addEventListener("click",()=>{choose(+b.getAttribute("data-index"));}));
 }
-function choose(index,timeout){
+function choose(index){
   const sc=scenes[state.step]; if(!sc.choices) return;
   const ch=sc.choices[index]||sc.choices[0];
   state.score=clamp(state.score+(ch.delta?.score||0),0,100);
   state.trust=clamp(state.trust+(ch.delta?.trust||0),0,100);
   state.fair=clamp(state.fair+(ch.delta?.fair||0),0,100);
-  addLog(`${sc.title} — ${timeout?"⏱️ Sin respuesta":ch.text} → ${ch.fb}`); sfx.beep(timeout?250:520,.07,timeout?"sawtooth":"triangle");
+  addLog(`${sc.title} — ${ch.text} → ${ch.fb}`); sfx.beep(520,.07,"triangle");
   state.step++;
   if(state.step>=scenes.length-1){
     const best=+localStorage.getItem("aurora_best")||0; if(state.score>best) localStorage.setItem("aurora_best",state.score);
-    const summary=document.createElement("div");
-    summary.innerHTML = `<p><strong>Puntaje final:</strong> ${state.score} · <strong>Confianza:</strong> ${state.trust} · <strong>Equidad:</strong> ${state.fair}</p>
-      <div class="box">${interpret()}</div>`;
-    scenes[scenes.length-1].html = `<h2>Informe de misión</h2>${summary.outerHTML}<div class="choices"><button class="choice" data-restart>Jugar de nuevo</button></div>`;
+    const summary = `<strong>Puntaje:</strong> ${state.score} · <strong>Confianza:</strong> ${state.trust} · <strong>Equidad:</strong> ${state.fair}<br>` + interpret();
+    scenes[scenes.length-1].html = `<h2>Informe de misión</h2><div class="box">${summary}</div><div class="choices"><button class="choice" data-restart>Jugar de nuevo</button></div>`;
   }
   renderScene();
 }
-function interpret(){ const s=state.score,t=state.trust,f=state.fair;
-  if(s>=80&&t>=70&&f>=70) return "Excelente: promoviste transparencia institucional, verificación clínica y métricas de fidelidad por especialidad.";
-  if(s>=60) return "Bien: identificaste riesgos y aplicaste salvaguardas; refuerza medición de equidad y comunicación con pacientes.";
+function interpret(){
+  const s=state.score,t=state.trust,f=state.fair;
+  if(s>=80&&t>=70&&f>=70) return "Excelente: transparencia institucional, verificación clínica y métricas por especialidad.";
+  if(s>=60) return "Bien: salvaguardas clave; refuerza medición de equidad y comunicación con pacientes.";
   if(s>=40) return "Intermedio: confiaste en rendimiento sin evidencia suficiente; implementa pilotos con auditoría y consentimiento.";
-  return "Riesgoso: delegaste decisiones a cajas negras; urge auditoría externa, trazas de decisión y métricas por servicio.";
+  return "Riesgoso: delegaste decisiones a cajas negras; urge auditoría externa y trazas de decisión.";
 }
-function reset(){ state.step=0; state.score=50; state.trust=50; state.fair=50; el.log.innerHTML=""; renderScene(); }
+function reset(){ state.step=0; state.score=50; state.trust=50; state.fair=50; if(el.log) el.log.innerHTML=""; renderScene(); }
 
-// Key controls & toggles
-document.addEventListener("keydown",e=>{
-  const btns=Array.from(document.querySelectorAll(".choice[data-index]"));
-  if(e.key==="ArrowDown"){ state.selected=Math.min(btns.length-1,state.selected+1); highlightChoice(state.selected); e.preventDefault(); }
-  if(e.key==="ArrowUp"){ state.selected=Math.max(0,state.selected-1); highlightChoice(state.selected); e.preventDefault(); }
-  if(e.key==="Enter"&&btns[state.selected]){ btns[state.selected].click(); e.preventDefault(); }
-  if(e.key.toLowerCase()==="h"){ alert("Objetivo: maximizar Puntaje, Confianza y Equidad.
-• Prefiere trazabilidad y auditoría.
-• Evita proxies sesgados.
-• Verifica LLM con datos/fuentes.
-• Mide fidelidad de escribas.
-Controles: ↑/↓ mover · Enter elegir · S sonido · H ayuda"); }
-  if(e.key.toLowerCase()==="s"){ toggleAudio(); }
-});
-function highlightChoice(i){ document.querySelectorAll(".choice[data-index]").forEach((b,idx)=>{ b.style.outline=(idx===i?"2px solid var(--accent)":"none"); }); }
-document.getElementById("helpBtn").addEventListener("click",()=>alert("Consejos y controles:
-↑/↓ mover · Enter elegir · S sonido · H ayuda"));
-function toggleAudio(){ sfx.enabled=!sfx.enabled; const t=document.getElementById("toggleAudio"); t.textContent=sfx.enabled?"🔊 Sonido: on":"🔈 Sonido: off"; t.setAttribute("aria-pressed", sfx.enabled?"true":"false"); if(sfx.enabled) sfx.beep(800,.08,"sine"); }
-document.getElementById("toggleAudio").addEventListener("click",toggleAudio);
+// --- toggles ---
+function toggleAudio(){ sfx.enabled=!sfx.enabled; const t=document.getElementById("toggleAudio");
+  t.textContent=sfx.enabled?"🔊 Sonido: on":"🔈 Sonido: off"; t.setAttribute("aria-pressed", sfx.enabled?"true":"false");
+  if(sfx.enabled) sfx.beep(800,.08,"sine");
+}
+el.helpBtn && el.helpBtn.addEventListener("click",()=>alert("Controles: clic o Enter para elegir.\nConsejos:\n• Auditoría y trazas > promesas de marketing.\n• Evita proxies sesgados (gasto ≠ necesidad).\n• Valida LLM con datos y fuentes.\n• Mide fidelidad de escribas (omisiones/sustituciones/fabricaciones)."));
+el.toggleAudio && el.toggleAudio.addEventListener("click",toggleAudio);
 
-// Init
-reset();
+// --- inicializar cuando el DOM está listo ---
+window.addEventListener('DOMContentLoaded', reset);
 </script>
+
 </body>
 </html>
