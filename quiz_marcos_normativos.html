@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adivina quién regula así — Quiz de Marcos Normativos</title>
+<meta name="description" content="Juego interactivo sobre marcos normativos de IA: China, Europa, Estados Unidos y Colombia.">
+<style>
+  :root{
+    --bg1:#0c1022; --bg2:#0e1634; --panel:#0f1a3a; --ink:#eaf0ff; --muted:#9fb0d1;
+    --accent:#7dd3fc; --accent2:#a78bfa; --good:#86efac; --bad:#fecaca;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:linear-gradient(180deg,var(--bg1),var(--bg2)); color:var(--ink);
+       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif; min-height:100vh; display:flex; align-items:center; justify-content:center}
+  .app{max-width:900px; width:100%; padding:18px}
+  .card{background:linear-gradient(180deg, rgba(17,26,60,.9), rgba(12,18,46,.9)); border:1px solid rgba(255,255,255,.08);
+        border-radius:18px; padding:22px; box-shadow:0 10px 30px rgba(0,0,0,.3)}
+  h1{margin:.2rem 0 0 0; font-size:1.6rem}
+  .subtitle{color:var(--muted); margin:.25rem 0 1rem 0}
+  .hud{display:flex; align-items:center; gap:10px; margin:.25rem 0 12px 0}
+  .progress{flex:1; height:8px; background:rgba(255,255,255,.06); border-radius:999px; overflow:hidden}
+  .progress .bar{height:8px; width:0%; background:linear-gradient(90deg, var(--accent2), var(--accent))}
+  .status{display:flex; gap:12px; font-variant-numeric:tabular-nums}
+  .pill{border:1px solid rgba(255,255,255,.15); border-radius:999px; padding:.15rem .6rem; color:#cfe3ff; font-size:.9rem}
+  .panel{background:var(--panel); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:16px; min-height:220px}
+  .qtext{font-size:1.05rem; line-height:1.5}
+  .choices{display:grid; gap:10px; margin-top:12px}
+  .choice{cursor:pointer; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.03); color:var(--ink);
+    border-radius:12px; padding:.75rem 1rem; text-align:left; font-weight:600; transition:all .15s ease}
+  .choice:hover{transform:translateY(-1px); background:rgba(125,211,252,.08); border-color:rgba(125,211,252,.25)}
+  .flag{margin-right:.5rem}
+  .footer{display:flex; justify-content:space-between; align-items:center; margin-top:10px; color:var(--muted); font-size:.92rem}
+  .kbd{border:1px solid rgba(255,255,255,.25); border-radius:6px; padding:.1rem .4rem; color:#d8e5ff}
+  .hidden{display:none}
+  .result{padding:12px; border:1px solid rgba(255,255,255,.12); border-radius:12px; margin-top:12px}
+  .good{color:var(--good)}
+  .bad{color:var(--bad)}
+  .btn{cursor:pointer; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--ink);
+       border-radius:10px; padding:.5rem .8rem; font-weight:700}
+  .btn:hover{background:rgba(125,211,252,.1)}
+  .small{font-size:.9rem; color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="card" role="application" aria-label="Quiz de marcos normativos de IA">
+    <h1>🎮 Adivina quién regula así</h1>
+    <div class="subtitle">China 🇨🇳 · Europa 🇪🇺 · Estados Unidos 🇺🇸 · Colombia 🇨🇴</div>
+    <div class="hud">
+      <div class="progress" aria-label="Progreso"><div id="bar" class="bar"></div></div>
+      <div class="status">
+        <span class="pill">Pregunta <b id="qnum">1</b>/7</span>
+        <span class="pill">Puntaje <b id="score">0</b></span>
+        <span class="pill">Mejor <b id="best">—</b></span>
+      </div>
+    </div>
+    <div id="panel" class="panel"></div>
+    <div class="footer">
+      <div>Controles: <span class="kbd">1</span><span class="small">/</span><span class="kbd">2</span><span class="small">/</span><span class="kbd">3</span><span class="small">/</span><span class="kbd">4</span> elegir · <span class="kbd">Enter</span> continuar</div>
+      <div><button id="startBtn" class="btn">Empezar</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUIZ = [
+  {
+    text: "“Los algoritmos deben registrarse ante la autoridad nacional y no pueden influir en la opinión pública sin autorización.”",
+    options: ["🇨🇳 China","🇪🇺 Europa","🇺🇸 Estados Unidos","🇨🇴 Colombia"],
+    answer: 0,
+    why: "China: enfoque de seguridad nacional y control de plataformas algorítmicas (CAC, 2022)."
+  },
+  {
+    text: "“Los sistemas de IA de alto riesgo deberán someterse a evaluación de conformidad antes de su lanzamiento.”",
+    options: ["🇨🇳 China","🇪🇺 Europa","🇺🇸 Estados Unidos","🇨🇴 Colombia"],
+    answer: 1,
+    why: "Unión Europea (AI Act): modelo ex ante con requisitos por niveles de riesgo."
+  },
+  {
+    text: "“El desarrollo de IA debe garantizar la innovación y la competitividad nacional; las guías son de adopción voluntaria.”",
+    options: ["🇨🇳 China","🇪🇺 Europa","🇺🇸 Estados Unidos","🇨🇴 Colombia"],
+    answer: 2,
+    why: "Estados Unidos: enfoque sectorial y estándares voluntarios (p.ej., NIST AI RMF)."
+  },
+  {
+    text: "“Los datos personales solo podrán usarse con autorización del titular y para la finalidad específica declarada.”",
+    options: ["🇨🇳 China","🇪🇺 Europa","🇺🇸 Estados Unidos","🇨🇴 Colombia"],
+    answer: 3,
+    why: "Colombia: Habeas Data y principio de finalidad rigen el uso de datos personales."
+  },
+  {
+    text: "“Los modelos generativos deberán etiquetar automáticamente el contenido producido por IA.”",
+    options: ["🇨🇳 China","🇪🇺 Europa","🇺🇸 Estados Unidos","🇨🇴 Colombia"],
+    answer: 0,
+    why: "China: reglas para servicios de IA generativa incluyen etiquetado y responsabilidad de plataformas."
+  },
+  {
+    text: "“Los desarrolladores deben implementar gobernanza de datos y auditorías internas de sesgo.”",
+    options: ["🇨🇳 China","🇪🇺 Europa","🇺🇸 Estados Unidos","🇨🇴 Colombia"],
+    answer: 1,
+    why: "UE (AI Act): requisitos de gestión de datos y documentación técnica para alto riesgo."
+  },
+  {
+    text: "“El gobierno fomentará zonas experimentales para innovación en IA con acompañamiento ético y jurídico.”",
+    options: ["🇨🇳 China","🇪🇺 Europa","🇺🇸 Estados Unidos","🇨🇴 Colombia"],
+    answer: 3,
+    why: "Colombia: lineamientos de política pública abren la puerta a pilotos y sandbox regulatorios."
+  }
+];
+
+const el = {
+  panel: document.getElementById("panel"),
+  bar: document.getElementById("bar"),
+  qnum: document.getElementById("qnum"),
+  score: document.getElementById("score"),
+  best: document.getElementById("best"),
+  start: document.getElementById("startBtn")
+};
+
+let step = -1;
+let score = 0;
+let locked = false;
+let best = +(localStorage.getItem("quiz_best_normativos")||0);
+el.best.textContent = best? best : "—";
+
+function start(){
+  step = -1;
+  score = 0;
+  el.score.textContent = score;
+  next();
+}
+function next(){
+  step++;
+  if(step >= QUIZ.length){ return finish(); }
+  locked = false;
+  const q = QUIZ[step];
+  el.qnum.textContent = (step+1);
+  el.bar.style.width = ((step)/(QUIZ.length))*100 + "%";
+  el.panel.innerHTML = `
+    <div class="qtext">${q.text}</div>
+    <div class="choices" role="listbox" aria-label="Opciones">
+      ${q.options.map((t,i)=>`<button class="choice" data-i="${i}"><span class="flag">${["🇨🇳","🇪🇺","🇺🇸","🇨🇴"][i]}</span> ${t.replace(/^.. /,"")}</button>`).join("")}
+    </div>
+    <div id="feedback" class="result hidden"></div>
+  `;
+  el.panel.querySelectorAll(".choice").forEach(btn=>{
+    btn.addEventListener("click", ()=>choose(+btn.dataset.i));
+  });
+}
+function choose(i){
+  if(locked) return;
+  locked = true;
+  const q = QUIZ[step];
+  const correct = (i === q.answer);
+  if(correct) score += 10;
+  el.score.textContent = score;
+  const feedback = document.getElementById("feedback");
+  feedback.classList.remove("hidden");
+  feedback.innerHTML = correct
+    ? `<div class="good">✔ Correcto</div><div class="small">${q.why}</div><div style="margin-top:8px"><button class="btn" id="nextBtn">Siguiente</button></div>`
+    : `<div class="bad">✖ Incorrecto</div><div class="small">${q.why}</div><div style="margin-top:8px"><button class="btn" id="nextBtn">Siguiente</button></div>`;
+  // Highlight selections
+  el.panel.querySelectorAll(".choice").forEach((btn,idx)=>{
+    if(idx === q.answer){
+      btn.style.borderColor = "rgba(134,239,172,.8)"; btn.style.background = "rgba(34,197,94,.08)";
+    }else if(idx === i){
+      btn.style.borderColor = "rgba(248,113,113,.6)";
+    }else{
+      btn.style.opacity = .6;
+    }
+  });
+  document.getElementById("nextBtn").addEventListener("click", next);
+}
+function finish(){
+  if(score > best){ best = score; localStorage.setItem("quiz_best_normativos", best); }
+  el.bar.style.width = "100%";
+  el.panel.innerHTML = `
+    <h2>Resultado</h2>
+    <p>Puntaje final: <strong>${score}</strong> / ${QUIZ.length*10}</p>
+    <p class="small">Mejor puntaje en este navegador: <strong>${best}</strong></p>
+    <div class="result">
+      <p><strong>Claves para recordar:</strong></p>
+      <ul>
+        <li>🇪🇺 Europa — <em>AI Act</em> con evaluación ex ante por riesgo.</li>
+        <li>🇺🇸 EE.UU. — Estándares voluntarios y enfoque sectorial (NIST AI RMF).</li>
+        <li>🇨🇳 China — Registro de algoritmos, etiquetado y control de plataformas.</li>
+        <li>🇨🇴 Colombia — Habeas Data, finalidad y pilotos/sandbox.</li>
+      </ul>
+    </div>
+    <div style="margin-top:12px">
+      <button class="btn" id="again">Jugar de nuevo</button>
+    </div>
+  `;
+  document.getElementById("again").addEventListener("click", start);
+}
+
+document.addEventListener("keydown", (e)=>{
+  if(step < 0) return;
+  if(["1","2","3","4"].includes(e.key)){
+    const idx = +e.key - 1;
+    const btn = el.panel.querySelector(`.choice[data-i="${idx}"]`);
+    if(btn) btn.click();
+  }
+  if(e.key === "Enter" && locked){
+    const btn = document.getElementById("nextBtn");
+    if(btn) btn.click();
+  }
+});
+
+el.start.addEventListener("click", ()=>{
+  el.start.disabled = true;
+  el.start.textContent = "¡Suerte!";
+  start();
+});
+</script>
+</body>
+</html>
