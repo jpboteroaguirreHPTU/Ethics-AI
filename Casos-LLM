@@ -1,0 +1,114 @@
+Link: https://llm.apps.infomed.guru/
+
+Prompt 1
+
+INSTRUCCIÓN= """Entrega un listado de los 6 diagnósticos más probables, sin mencionar nada más que el listado"""
+CONTEXTO= """Como Médico especialista en medicina interna."""
+INPUT= """paciente de 56 años experimenta un inicio gradual de síntomas que inicialmente parecen no específicos y pueden confundirse fácilmente con otros trastornos relacionados con la edad. Con el tiempo, comienza a sentir una sed inusualmente alta y una necesidad frecuente de orinar, aunque estos síntomas no son tan prominentes como se esperaría en casos clásicos. Además, muestra una pérdida de peso inexplicable y una sensación de fatiga constante que atribuye al envejecimiento o al estrés. Curiosamente, el paciente también reporta haber experimentado episodios de visión borrosa y una sensación de hormigueo en las extremidades, especialmente los pies, que va y viene. A pesar de un apetito normal o ligeramente aumentado, no logra ganar peso. La familia del paciente nota que se ha vuelto más irritable y que tiene dificultades para concentrarse, cambios que inicialmente atribuyen a problemas personales o laborales. En los últimos meses, el paciente ha tenido infecciones cutáneas frecuentes y curación lenta de heridas, lo que le llevó a buscar atención médica."""
+OUTPUT= """listado con viñetas"""
+
+Prompt 2
+
+INSTRUCCIÓN= """Analiza el caso clínico y Elabora lista de pruebas útiles para confirmar el diagnóstico"""
+CONTEXTO= """Como médico urólogo"""
+INPUT= """Tengo un paciente de 50 años con antecedentes familiares de cáncer de próstata. Recientemente ha presentado síntomas urinarios y dolor en la zona pélvica. Los estudios de laboratorio muestran un nivel de PSA ligeramente elevado. Sin embargo, la biopsia guiada por ultrasonido no muestra hallazgos típicos de cáncer de próstata. Su resonancia magnética multiparamétrica muestra una lesión en la zona de transición, que no es común en el cáncer de próstata."""
+OUTPUT= """lista numerada"""
+
+Prompt 3
+
+INSTRUCCIÓN= """Crea 10 respuestas para responder a crítica de Google Business"""
+CONTEXTO= """Como especialista en manejo de medios para el hospital más importante de Colombia. Utiliza un tono de voz formal y empático. Escribe 5 respuestas invitando al paciente a contactarse a reclamos@hospital.com y otras 5 respuestas en donde únicamente se pide disculpas sin ofrecer vía de contacto"""
+INPUT= """Mala su atención en todos los aspectos la verdad no recomiendo para nada tuve un esguince en el tobillo derecho la verdad dure casi una hora para que me atendieran. Al final me dijeron que no me atenderán que era mejor que buscara otro hospital o otra clínica para que me atendieran... en verdad ya no hay doctores ni enfermeras que no trabajen por amor a lo que hacen... lástima que la salud de este país esté cada vez peor... y mala la atención de este hospital... sí tenía mi pie y ni por estas me quisieron atender..."""
+OUTPUT= """Listado de opciones de respuesta formal"""
+
+Prompt 4
+
+INSTRUCCIÓN= """Prioriza la información más importante y resume esta evolución médica en 5 líneas"""
+CONTEXTO= """Como Médico especialista en Cardiología con más de 30 años de experiencia"""
+INPUT= """Paciente masculino 47 años Trabaja en comercio
+Antec: IAM con SDST 2021. PTCA a ADA prox con un DES. FE 40%. Hipertensión arterial, Hipotiroidismo, Insulinoresistencia, Alergias: -, Tabaco: -
+AAFF: Hermano IAM reciente
+Medicamentos: AAS 100x1, Clop 75x1, Atorvastatina 20x4, Eutirox 75, bisoprolol 2.5x1, espironolactona 12.5x1, Metformina XR 750x1, Clotiazepam 5x1, Ezetimibe 10x1, Setralina 50x1,
+
+Hospitalización reciente por COVID
+Desde el alta con dolor torácico, constante
+
+Al examen: EVA 0/10 PA 100/60 FC 80
+Yug planas, sin soplos carotideos
+RR2TSS
+MP+SRA
+Abd: BDI, no palpo masas ni visceromegalias, Ao impresiona de tamaño normal
+Piel tibia a distal sin edema, pulsos simétricos
+
+Plan:
+Suspender clopidogrel
+Eco y test esfuerzo
+Control con resultado"""
+OUTPUT= """Markdown"""
+
+Prompt 5
+
+INSTRUCCIÓN= """Redacta un informe médico para el seguro de salud SURA inicia texto con Estimados SURA"""
+CONTEXTO= """Como médico cardiólogo especializado en recambio valvular que solicita una TAVI que es la mejor tecnología para utilizar con este paciente"""
+INPUT= """Masculino, 77 años.
+Portador de estenosis aórtica severa sintomática que ingresa hace 2 días en edema pulmonar agudo y con FA rápida con compromiso hemodinámico.
+Se cardiovirtió, inicio terapia depletiva, vasodilatadora y soporte ventilatorio no invasivo, con lo que ha mejorado bastante.
+
+Mantiene ritmo sinusal 65-75lpm.
+Normotenso y bien perfundido, con bic de nitroglicerina suspendida ayer, sin vasodilatadores orales ni betabloqueo aun.
+Con buena respuesta a terapia depletiva: BHA-5 litros, y Rx de tórax ya con franca menos congestión.
+Soportado con CNAF durante el día y CPAP durante la noche, bien tolerado clínicamente, con buena mecánica y mejor tolerancia al decúbito 45°. Destaca que control de gases en ventana CNAF cayo PaO2 a 64 e hiperventilando PCO2 28. Por lo que probablemente aun requiere soporte mecánico parcial.
+En lo infeccioso ayer tuvo un episodio de 37,8°c aislado. Sin repetirse, sin deterioro clínico.
+En lo renal con AKI en curso sobre probable ERC (riñon derecho más pequeño en eco reciente). Ingres con creatinina de 2.2 y actualmente en 2.4, diuresis 3000/24hr apoyado con bolos de furosemida. Medio interno ok.
+Anticoagulado con BIC de heparina, hoy con TTPK incoagulable am por lo que dejamos pausada.
+Buena tolerancia oral, buen control metabólico. Sin deposiciones aun."""
+OUTPUT= """Markdown"""
+
+Prompt 6
+
+INSTRUCCIÓN= """Codifica el caso clínico con SNOMED CT y CIE-11"""
+CONTEXTO= """Como enfermera especialista en codificación clínica utilizando la versión en español de SNOMED CT y de CIE-11"""
+INPUT= """Motivo de Ingreso: Ingresa por Fx de cadera der. Post caída en dom. Antecedentes: HTA y DM2 (controlada con hipoglucemiantes orales), sin Qx previas. Sin alergias conocidas. Examen Físico: EG: Estable, orientado, consciente. Cadera der.: Deformidad evidente, acortamiento y rotación ext. Dolor ++ a la palpación, no mueve activamente pierna der. Radiografía: Rx confirma Fx intertrocantérica fémur der., desplazada. Plan: Ingreso a internación. Qx programada. Profilaxis antitrombótica con HBPM. Monitorizar SV. Diag: Fx intertrocantérica cadera der. Pronóstico: Reservado, dependerá de evolución postQx. """
+OUTPUT= """tabla con columnas: texto de la evolución, código SNOMED, descripción SNOMED, código CIE-11, descripción CIE-11"""
+
+Prompt 7
+
+INSTRUCCIÓN= """Crea una tabla"""
+CONTEXTO= """Como médico especialista en medicina interna"""
+INPUT= """ 1. ácido fólico 5 mg comprimido 5 miligramo CADA 24 HORAS, PERMANENTE, ORAL 2. sertralina 50 mg comprimido 25 miligramo 1 VEZ AL DÍA, PERMANENTE, ORAL aumentar a 50 mg al dia el 26/12/19 3. esomeprazol 40 mg comprimido 40 miligramo CADA 24 HORAS, PERMANENTE, ORAL 4. lactato de magnesio 835 mg (magnesio 85 mg) comprimido liberación modificada 85 miligramo CADA 24 HORAS, PERMANENTE, ORAL 5. melatonina 3 mg cápsula 3 miligramo CADA 24 HORAS, PERMANENTE, ORAL a las 21 horas 6. hialuronato de sodio 0,4% (4 mg/mL) colirio 1 gota 3 VECES AL DÍA, PERMANENTE, OCULAR en cada ojo. puede repetirse SOS 7. digoxina 0,25 mg comprimido 0,125 miligramo 1 VEZ AL DÍA, PERMANENTE, ORAL Los dias lunes miercoles y viernes 8. colecalciferol 6000 UI/mL gotas orales 4 gota CADA 24 HORAS, PERMANENTE, ORAL con comida 9. mirtazapina 30 mg comprimido 30 miligramo CADA 24 HORAS, PERMANENTE, ORAL a las 21 horas 10. apixabán 2,5 mg comprimido 2,5 miligramo CADA 12 HORAS, PERMANENTE, ORAL 11. epoetina alfa 2000 UI/mL inyectable 2000 unidades internacionales LUNES - MIERCOLES - VIERNES, PERMANENTE, SUBCUTÁNEA """
+OUTPUT= """Tabla Incluye columnas medicamento, dosis, frecuencia, hora, duración, vía y observaciones. Cuando no se especifica hora de inicio de la medicación debe asumirse las 8:00. Si la medicación tiene varias tomas por día indicar a las horas en las que debe administrarse el medicamento. Agrega la siguiente leyenda arriba de la tabla de medicamentos: Instrucciones creadas por un algoritmo de Inteligencia Artificial, contraste la información con las recetas entregadas por su médico tratante, sin ningún otro texto adicional. Si no hay indicaciones medicamentosas, no crear ninguna tabla."""
+
+Prompt 8
+
+INSTRUCCIÓN= """Identifica frases en evolución médica de paciente embarazada que reduzcan el riesgo de depresión postparto y frases que reflejen signos de depresión y ansiedad que podrían desencadenar una depresión postparto. Asigna un puntaje según protección o riesgo en una escala de -1 (protector de depresión postparto) a +3 (alto riesgo de signos de depresión postparto)"""
+CONTEXTO= """Ejemplos de frases Puntuación -1: Se asignará un valor -1 a aquellas oraciones que incluyan menciones a estados de ánimo que reducen el riesgo de depresión postparto tales como: - sentimientos positivos respecto al embarazo - expresiones explícitas de felicidad sincera Ejemplos de oraciones -1: “Me encuentro muy feliz e ilusionada, nunca había estado mejor” “Refiere estar optimista, disfrutando esta etapa” Puntuación 0: Se asignará un valor cero a aquellas oraciones que contienen información que no tiene relación alguna con signos o síntomas relativos a salud mental. Ejemplos: “Fecha de última regla 5 de noviembre de 2018” “RN sano” “Herida operatoria sin signos de infección” Puntuación +1: Se asignará un valor +1 a aquellas oraciones que incluyan síntomas o signos leves de ansiedad que pudiesen considerarse adaptativos a la situación tales como: - “Ligera dificultad para conciliar el sueño” - “Verbalización de incertidumbre razonable respecto al embarazo” - “Llora con más facilidad” Ejemplos de oraciones +1: “Le cuesta conciliar el sueño en ocasiones, aunque la mayor parte de los días duerme bien” “Está un poco preocupada por si sabrá identificar el inicio del parto, se le da información al respecto y la comprende.” Puntuación +2: Se asignará un valor +2 a aquellas oraciones que incluyan síntomas o signos moderados de ansiedad o depresión tales como: “Dificultad para conciliar el sueño” “Despierta durante la noche y no puede dormirse” “Tiene pensamientos repetitivos que le producen angustia” “Temerosa, con dificultad para tomar decisiones” “ha estado más irritable” “ha estado muy llorona, tiene temor” Puntuación +3: Se asignará un valor +3 a aquellas oraciones que incluyan síntomas o signos severos de ansiedad o síntomas depresivos tales como: “Dificultad para las tareas de la vida diaria” “no disfruta sus actividades” “presenta palpitaciones, sensación de pecho apretado” “ha tenido pensamientos de muerte” “tiene dificultades importantes para dormir”"""
+INPUT= """Nro. Gesta: 1 Edad Gestacional: 21 Sem + 2 Días N° De Feto: 1 Movimientos Fetales(Cualitativo): +++ Presentación Fetal(Cualitativo): Cefalica Evolución: Sra. 31 Años Actividad: Odontologa Red De Apoyo: Adecuada Antecedentes G-O: G1P0A0 Embarazo 21+2 Semanas 2a Dosis De Vacuna COVID Ok A Las 17 Semanas, Estuvo Con Fiebre Y CEG. **Refiere Insomnio Hace 3 Semanas **Con Problemas de pareja **Embarazo Aún No Aceptado Ex: Bien Perundida E Hidratada. Utero En Reposo. Abd BDI Eco: Feto Únco, Activo, Cefálica EPF 835 Grs, Liquido Normal. Placenta Posterior, Alta. Plan: Sugiero Evaluación Por Salud Mental. Exs 24-28 Sem. Screening 21-24 Sem Control: Hemoglobina Trimestre 1: 12.9 Coombs Indirecto Trimestre 1: - VIH Trimestre 1: - PRP Trimestre 1: - Chagas Trimestre 1: - Grupo Y RH Trimestre 2: B Positivo"""
+OUTPUT= """como JSON con listas en niveles inferiores, únicamente presentar frases puntuación -1 +1 +2 y +3 (omitir 0), variables FRASE y PUNTUACIÓN"""
+
+Prompt 9
+
+INSTRUCCIÓN= """ACTÚA como un médico especialista que debe leer una evolución clínica y generar un RESUMEN breve, claro y útil para que otro profesional comprenda rápidamente la situación del paciente."""
+CONTEXTO= """RAZONA paso a paso:
+1. IDENTIFICA los datos relevantes: diagnóstico actual, antecedentes importantes, motivo de consulta, hallazgos del examen físico, estudios solicitados y plan de manejo.
+2. IGNORA detalles administrativos, repeticiones o información irrelevante.
+3. MANTIENE la información clínica precisa, usando terminología médica estándar.
+4. ORGANIZA el resumen en un único párrafo breve (máximo 4 a 5 líneas).
+5. UTILIZA un lenguaje claro, objetivo y sin opiniones personales.
+6. NO inventes datos que no estén en el texto original.
+7. PRIORIZA la información que sea clave para la toma de decisiones médicas. A continuación recibirás el texto de la evolución médica como INPUT"""
+INPUT= """Paciente masculino 47 años Trabaja en comercio Antec: IAM con SDST 2021. PTCA a ADA prox con un DES. FE 40%. Hipertensión arterial, Hipotiroidismo, Insulinoresistencia, Alergias: -, Tabaco: - AAFF: Hermano IAM reciente Medicamentos: AAS 100x1, Clop 75x1, Atorvastatina 20x4, Eutirox 75, bisoprolol 2.5x1, espironolactona 12.5x1, Metformina XR 750x1, Clotiazepam 5x1, Ezetimibe 10x1, Setralina 50x1, Hospitalizacion reciente por COVID Desde el alta con dolor torácico, constante Al examen: EVA 0/10 PA 100/60 FC 80 Yug planas, sin soplos carotideos RR2TSS MP+SRA Abd: BDI, no palpo masas ni visceromegalias, Ao impresiona de tamaño normal Piel tibia a distal sin edema, pulsos simétricos Plan: Suspender clopidogrel Eco y test esfuerzo Control con resultado """
+OUTPUT= """La salida debe seguir este formato: "Resumen: [texto]" """
+
+Prompt 10
+
+INSTRUCCIÓN= """Explica de forma muy simple siempre entregando ejemplos prácticos cómo funciona y para qué sirve la logoaudiometría"""
+CONTEXTO= """Para explicar a niño de 14 años"""
+
+Prompt 11
+Ahora vamos a utilizar una imagen que hemos descargado de este dataset de NEUMONÍAS https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia Links to an external site.
+
+La imagen que vamos a utilizar es de una NEUMONÍA VIRAL, el archivo original se llamaba person_10_virus_35.jpeg (142.93 kB). Lo que hicimos fue renombrarlo como: radiografia torax normal sin infiltrados ni nódulos.jpeg
+
+📥 Descarga esta imagen desde este link
+
+Luego ingresa a https://chatgpt.com/Links to an external site. o a https://gemini.google.com/Links to an external site., sube la imagen y presiona para que la analice.
